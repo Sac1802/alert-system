@@ -1,6 +1,7 @@
 package com.said.auth.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.said.auth.models.users;
 import com.said.auth.repository.userRepository;
-import com.said.auth.DTO.userDTO;
 import com.said.auth.DTO.userResponseDTO;
 import com.said.auth.mapper.userMapper;
 
@@ -22,12 +22,6 @@ public class userService {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userMapper = userMapper;
-    }
-
-    public userDTO createUser(users user){
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        users userSaved = userRepository.save(user);
-        return userMapper.mapToUserDTO(userSaved);
     }
 
     public List<userResponseDTO> getUsers(){
@@ -50,10 +44,11 @@ public class userService {
     }
 
     public userResponseDTO updatedPassword(String email, String newPassword){
-        users userFind = userRepository.findByEmail(email);
-        if (userFind == null) throw new RuntimeException("user not found");
-        userFind.setPassword(bCryptPasswordEncoder.encode(newPassword));
-        users userUpdated = userRepository.save(userFind);
+        Optional<users> userFind = userRepository.findByEmail(email);
+        if (userFind.isEmpty()) throw new RuntimeException("user not found");
+        users user = userFind.get();
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        users userUpdated = userRepository.save(user);
         return userMapper.mapToUserResponseDTO(userUpdated);
     }
 

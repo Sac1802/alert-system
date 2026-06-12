@@ -4,12 +4,10 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.said.auth.DTO.userDTO;
 import com.said.auth.DTO.userResponseDTO;
 import com.said.auth.models.users;
 import com.said.auth.services.userService;
@@ -32,11 +30,6 @@ public class userController {
     @GetMapping("/users/id")
     public userResponseDTO getUserById(Long id) {
         return userService.getUserByid(id);
-    }
-
-    @PostMapping("/users")
-    public userDTO createUser(users user) {
-        return userService.createUser(user);
     }
 
     @PutMapping("/users")
